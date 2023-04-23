@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -21,8 +22,10 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customers.create');
+        $customer = new Customer();
+        return view('customers.create', compact('customer'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -33,9 +36,11 @@ class CustomerController extends Controller
             'name' => 'required|max:255',
             'surname' => 'required|max:255',
             'email' => 'required|email|unique:customers|max:255',
-            'password' => 'required|max:255|' (Customer::PASSWORD_VALIDATION),
+            'password' => (Customer::PASSWORD_VALIDATION),
             'status' => 'required|max:255',
         ]);
+
+        $validatedData['password'] = bcrypt($validatedData['password']);
 
         Customer::create($validatedData);
 
@@ -67,13 +72,28 @@ class CustomerController extends Controller
     public function update(Request $request, string $id)
     {
         $customer = Customer::findOrFail($id);
-        $customer->name = $request->input('name');
-        $customer->surname = $request->input('surname');
-        $customer->email = $request->input('email');
-        $customer->password = $request->input('password');
-        $customer->stato = $request->input('stato');
-        $customer->save();
+
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'surname' => 'required|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('customers')->ignore($customer->id),
+                'max:255'
+            ],
+            'password' => Customer::PASSWORD_VALIDATION,
+            'status' => 'required|max:255',
+        ]);
+
+        $validatedData['password'] = bcrypt($validatedData['password']);
+
+        $customer->update($validatedData);
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Cliente aggiornato con successo.');
     }
+
 
     /**
      * Remove the specified resource from storage.

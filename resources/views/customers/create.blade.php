@@ -43,10 +43,12 @@
     <div class="form-group">
         <label for="stato">Stato</label>
         <select class="form-control" id="stato" name="status" required>
-            <option value="attivo">Attivo</option>
-            <option value="disattivo">Disattivo</option>
+            @foreach($customer->getStatus() as $key => $value)
+                <option value="{{ $key }}" {{ $key == $customer->status ? 'selected' : '' }}>{{ $value }}</option>
+            @endforeach
         </select>
     </div>
+
 
     <button type="submit" class="btn btn-success m-3 ">Crea</button>
 </form>
