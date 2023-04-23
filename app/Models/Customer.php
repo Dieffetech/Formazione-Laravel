@@ -18,9 +18,11 @@ class Customer extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'username',
+        'name',
+        'surname',
         'email',
         'password',
+        'status'
     ];
 
     /**
@@ -41,4 +43,22 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    const PASSWORD_VALIDATION = [
+        "required",
+        "min:8",
+        "confirmed",
+        'regex:/[a-z]/',
+        'regex:/[A-Z]/',
+        'regex:/[0-9]/',
+        'regex:/[@$!%*#?&_.;]/',
+    ];
+
+    public function getStatus()
+    {
+        return [
+            0 => __("Non Attivo"),
+            1 => __("Attivo")
+        ];
+    }
 }
