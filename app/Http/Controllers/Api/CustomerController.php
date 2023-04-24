@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\WrongCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\TokenRequest;
+use App\Http\Requests\CustomerInsertRequest;
 use App\Models\Customer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,10 +16,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Request $request
+     * @param CustomerInsertRequest $request
      * @return JsonResponse
      */
-    public function insert(Request $request)
+    public function insert(CustomerInsertRequest $request)
     {
 
         $customer_id = $request->input('customer_id');
