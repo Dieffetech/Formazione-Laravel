@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\PaginationTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, PaginationTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +44,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $allowedFilters = [
+        'id',
+        'name',
+        'surname',
+        'email',
+        'status',
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'name',
+        'surname',
+        'email',
+        'updated_at',
+        'created_at',
+    ];
+
     const PASSWORD_VALIDATION = [
         "required",
         "min:8",
@@ -59,5 +77,14 @@ class User extends Authenticatable
             0 => __("Non Attivo"),
             1 => __("Attivo")
         ];
+    }
+
+    public static function getQueryForApi($search = [])
+    {
+        $query = self::query();
+
+        $query->where("users.status", 1);
+
+        return $query;
     }
 }
