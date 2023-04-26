@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function (){
 Route::prefix("customers/")->group(function(){
     Route::post('insert', [CustomerController::class, 'insert'])->name('customers.insert');
     Route::get('index', [CustomerController::class, 'index'])->name('customers.index');
-    Route::get('show/{customer_id}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::get('show/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::delete('delete/{customer_id}', [CustomerController::class, 'delete'])->name('customers.delete');
 });
 

@@ -6,10 +6,6 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CustomerCollection extends ResourceCollection
 {
-
-    public $lang_id;
-    public $instance_id;
-
     public function __construct($resource,$paginate = true)
     {
         parent::__construct($resource);

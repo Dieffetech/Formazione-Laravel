@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\TokenRequest;
 use App\Http\Requests\CustomerInsertRequest;
 use App\Http\Resources\CustomerCollection;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -26,7 +27,7 @@ class CustomerController extends Controller
         $customer_id = $request->input('customer_id');
         $customer = Customer::query()->where("id", $customer_id)->first();
 
-        if ($customer){
+        if ($customer) {
             $customer->fill($request->all());
             $customer->password = bcrypt($customer->password);
             $customer->save();
@@ -46,18 +47,25 @@ class CustomerController extends Controller
 
     public function index(Request $request)
     {
-        $sortBy = $request->input('sort', 'title');
-        $sortDirection = $request->input('sort_direction', 'asc');
-        /*$perPage = $request->input('perPage');*/
-
-        $customer = Customer::query()->where("status", "=", true);
-
-        if ($sortBy){
-            $customer->orderBy($sortBy, $sortDirection);
-        }else{
-            $customer->get();
-        }
+        $customer = Customer::query()->where("status", "=", true)->get();
 
         return new CustomerCollection($customer);
+    }
+
+    public function delete($customer_id)
+    {
+        try {
+            $customer_delete = Customer::findOrFail($customer_id);
+            $customer_delete->delete();
+
+            return response()->json([
+                "message" => "Customer eliminato con successo"
+            ]);
+
+        } catch (ModelNotFoundException) {
+            return response()->json([
+                "error" => "Nessun Customer Trovato"
+            ]);
+        }
     }
 }
