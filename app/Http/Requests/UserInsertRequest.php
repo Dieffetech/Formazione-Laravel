@@ -41,7 +41,7 @@ class UserInsertRequest extends FormRequest
             ],
             "email" => [
                 "required",
-                Rule::unique(Customer::class, 'email'),
+                Rule::unique(User::class, 'email'),
             ],
             "password"=> User::PASSWORD_VALIDATION
         ];
