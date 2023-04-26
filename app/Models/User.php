@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'password',
     ];
@@ -41,4 +42,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    const PASSWORD_VALIDATION = [
+        "required",
+        "min:8",
+        "confirmed",
+        'regex:/[a-z]/',
+        'regex:/[A-Z]/',
+        'regex:/[0-9]/',
+        'regex:/[@$!%*#?&_.;]/',
+    ];
+
+    public function getStatus()
+    {
+        return [
+            0 => __("Non Attivo"),
+            1 => __("Attivo")
+        ];
+    }
 }
