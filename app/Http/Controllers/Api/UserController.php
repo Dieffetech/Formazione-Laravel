@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\WrongCredentialsException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\TokenRequest;
-use App\Http\Requests\CustomerInsertRequest;
 use App\Http\Requests\UserInsertRequest;
-use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\UserCollection;
-use App\Models\Customer;
 use App\Models\User;
+use App\Http\Resources\User as UserResources;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,6 +49,24 @@ class UserController extends Controller
         $user = User::query()->where("status", "=", true)->get();
 
         return new UserCollection($user);
+    }
+
+    public function show($user_id, Request $request)
+    {
+        $search = [
+            "user_id" => $user_id
+        ];
+
+        $user = User::paginate(1, $search);
+
+        if ($user) {
+            $return = [];
+            $return["data"] = (new UserResources($user))->toArray($request);
+
+            return $return;
+        } else {
+            return response()->json('Utente non trovato', 404);
+        }
     }
 
     public function delete($user_id)
