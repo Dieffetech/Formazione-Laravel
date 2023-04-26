@@ -46,7 +46,24 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $user = User::query()->where("status", "=", true)->get();
+        $perPage = $request->input('perPage');
+        $sortBy = $request->input('sort', 'name');
+        $sortDirection = $request->input('sort_direction', 'asc');
+        $search = $request->input('search');
+
+        $query = User::query()->where("status", "=", true);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%$search%")
+                    ->orWhere('surname', 'LIKE', "%$search%")
+                    ->orWhere('email', 'LIKE', "%$search%");
+            });
+        }
+
+        $query->orderBy($sortBy, $sortDirection);
+
+        $user = $query->paginate($perPage);
 
         return new UserCollection($user);
     }
