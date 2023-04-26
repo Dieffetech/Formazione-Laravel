@@ -6,6 +6,7 @@ use App\Exceptions\WrongCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\TokenRequest;
 use App\Http\Requests\CustomerInsertRequest;
+use App\Http\Resources\CustomerCollection;
 use App\Models\Customer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,5 +42,22 @@ class CustomerController extends Controller
         return response()->json([
             'customer' => $customer,
         ]);
+    }
+
+    public function index(Request $request)
+    {
+        $sortBy = $request->input('sort', 'title');
+        $sortDirection = $request->input('sort_direction', 'asc');
+        /*$perPage = $request->input('perPage');*/
+
+        $customer = Customer::query()->where("status", "=", true);
+
+        if ($sortBy){
+            $customer->orderBy($sortBy, $sortDirection);
+        }else{
+            $customer->get();
+        }
+
+        return new CustomerCollection($customer);
     }
 }
