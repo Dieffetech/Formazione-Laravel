@@ -3,15 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\HasFilters;
 use App\Traits\PaginationTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, PaginationTrait;
+    use HasApiTokens, HasFactory, Notifiable, PaginationTrait, HasFilters;
 
     /**
      * The attributes that are mass assignable.
@@ -44,12 +46,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $allowedFilters = [
+    protected array $allowedFilters = [
         'id',
         'name',
         'surname',
         'email',
-        'status',
+        'status'
     ];
 
     protected $allowedSorts = [
@@ -86,5 +88,33 @@ class User extends Authenticatable
         $query->where("users.status", 1);
 
         return $query;
+    }
+
+    public function getAllowedFilters()
+    {
+        return $this->allowedFilters;
+    }
+
+    public static function paginatorSorts()
+    {
+        return "surname";
+    }
+
+    public static function paginatorSortable()
+    {
+        return [
+            'name',
+            'surname',
+            'email',
+        ];
+    }
+
+    public static function paginatorFilterable()
+    {
+        return [
+            'name',
+            'surname',
+            'email',
+        ];
     }
 }

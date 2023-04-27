@@ -7,10 +7,9 @@ use App\Http\Requests\UserInsertRequest;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
 use App\Http\Resources\User as UserResources;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -46,12 +45,9 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $request->input('perPage');
-        $sortBy = $request->input('sort', 'name');
-        $sortDirection = $request->input('sort_direction', 'asc');
+        $perPage = $request->input('perPage', 10);
         $search = $request->input('search');
-
-        $query = User::query()->where("status", "=", true);
+        $query = User::paginate();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -61,45 +57,30 @@ class UserController extends Controller
             });
         }
 
-        $query->orderBy($sortBy, $sortDirection);
-
         $user = $query->paginate($perPage);
 
         return new UserCollection($user);
     }
 
-    public function show($user_id, Request $request)
+
+    public function show(User $user, Request $request)
     {
-        $search = [
-            "user_id" => $user_id
-        ];
 
-        $user = User::paginate(1, $search);
 
-        if ($user) {
+
             $return = [];
             $return["data"] = (new UserResources($user))->toArray($request);
 
             return $return;
-        } else {
-            return response()->json('Utente non trovato', 404);
-        }
+
     }
 
-    public function delete($user_id)
+    public function delete(User $user)
     {
-        try {
-            $user_delete = User::findOrFail($user_id);
-            $user_delete->delete();
+            $user->delete();
 
             return response()->json([
                 "message" => "Utente eliminato con successo"
             ]);
-
-        } catch (ModelNotFoundException) {
-            return response()->json([
-                "error" => "Nessun Utente Trovato"
-            ]);
-        }
     }
 }

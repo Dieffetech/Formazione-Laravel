@@ -2,32 +2,18 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 trait PaginationTrait
 {
-    public static function paginate($forPage = null, $search = [], $page = null)
+    public static function paginate()
     {
-        $query = self::getQueryForApi($search);
-
-        if (!empty($forPage) && $forPage != 1) {
-            $models = $query->paginate($forPage, ["*"], "page", $page);
-        } else {
-            $models = $query->get();
-        }
-
-        if ($forPage == 1) {
-            return $models[0] ?? null;
-        }
-
-        return $models;
-    }
-
-    public static function paginateSorted($ids, $forPage = null, $search = [], $page = null)
-    {
-        return self::paginate($forPage, $search, $page)->sortBy(function ($item, $key) use ($ids) {
-            return array_search($item->id, $ids);
-        });
+        return QueryBuilder::for(self::class)
+            ->defaultSort(self::paginatorSorts())
+            ->allowedSorts(self::paginatorSortable())
+            ->allowedFilters(self::paginatorFilterable());
     }
 
 }

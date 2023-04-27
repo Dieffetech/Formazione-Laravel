@@ -24,11 +24,10 @@ Route::prefix('auth')->group(function (){
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
 
-Route::prefix("users/")->group(function(){
-    Route::post('insert', [UserController::class, 'insert'])->name('users.insert');
-    Route::get('index', [UserController::class, 'index'])->name('users.index');
-    Route::get('show/{user_id}', [UserController::class, 'show'])->name('users.show');
-    Route::get('show/{user}', [UserController::class, 'show'])->name('users.show');
-    Route::delete('delete/{user_id}', [UserController::class, 'delete'])->name('users.delete');
+Route::prefix("users")->group(function(){
+    Route::post('/', [UserController::class, 'insert'])->name('users.insert');
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::delete('/{user}', [UserController::class, 'delete'])->name('users.delete');
 });
 
