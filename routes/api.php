@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,5 +30,12 @@ Route::prefix("users")->group(function(){
     Route::get('/', [UserController::class, 'index'])->name('users.index');
     Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
     Route::delete('/{user}', [UserController::class, 'delete'])->name('users.delete');
+});
+
+Route::prefix("customers/")->group(function(){
+    Route::post('insert', [CustomerController::class, 'insert'])->name('customers.insert');
+    Route::get('index', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('show/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::delete('delete/{customer_id}', [CustomerController::class, 'delete'])->name('customers.delete');
 });
 
