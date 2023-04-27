@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Traits\HasFilters;
 use App\Traits\PaginationTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +11,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, PaginationTrait, HasFilters;
+    use HasApiTokens, HasFactory, Notifiable, PaginationTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -88,11 +86,6 @@ class User extends Authenticatable
         $query->where("users.status", 1);
 
         return $query;
-    }
-
-    public function getAllowedFilters()
-    {
-        return $this->allowedFilters;
     }
 
     public static function paginatorSorts()

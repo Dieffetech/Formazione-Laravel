@@ -65,14 +65,10 @@ class UserController extends Controller
 
     public function show(User $user, Request $request)
     {
-
-
-
             $return = [];
             $return["data"] = (new UserResources($user))->toArray($request);
 
             return $return;
-
     }
 
     public function delete(User $user)

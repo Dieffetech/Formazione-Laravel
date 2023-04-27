@@ -32,10 +32,10 @@ Route::prefix("users")->group(function(){
     Route::delete('/{user}', [UserController::class, 'delete'])->name('users.delete');
 });
 
-Route::prefix("customers/")->group(function(){
-    Route::post('insert', [CustomerController::class, 'insert'])->name('customers.insert');
-    Route::get('index', [CustomerController::class, 'index'])->name('customers.index');
-    Route::get('show/{customer}', [CustomerController::class, 'show'])->name('customers.show');
-    Route::delete('delete/{customer_id}', [CustomerController::class, 'delete'])->name('customers.delete');
+Route::prefix("customers")->group(function(){
+    Route::post('/', [CustomerController::class, 'insert'])->name('customers.insert');
+    Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::delete('/{customer}', [CustomerController::class, 'delete'])->name('customers.delete');
 });
 
