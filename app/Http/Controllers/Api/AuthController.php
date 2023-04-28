@@ -6,6 +6,7 @@ use App\Exceptions\WrongCredentialsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\TokenRequest;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -13,7 +14,7 @@ class AuthController extends Controller
     /**
      * @throws WrongCredentialsException
      */
-    public function login(TokenRequest $request)
+    public function loginCustomer(TokenRequest $request)
     {
         $customer = Customer::query()
             ->where('email', $request->email)
@@ -26,6 +27,22 @@ class AuthController extends Controller
         return response()->json([
             'customer' => $customer,
             ...$customer->createAllAuthTokens("frontend"),
+        ]);
+    }
+
+    public function loginUser(TokenRequest $request)
+    {
+        $user = User::query()
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw new WrongCredentialsException();
+        }
+
+        return response()->json([
+            'user' => $user,
+            ...$user->createAllAuthTokens("frontend"),
         ]);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('auth')->group(function (){
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('customer/login', [AuthController::class, 'loginCustomer'])->name('customers.login');
+    Route::post('user/login', [AuthController::class, 'loginUser'])->name('users.login');
+});
+
+Route::prefix("users")->group(function(){
+    Route::post('/', [UserController::class, 'insert'])->name('users.insert');
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::delete('/{user}', [UserController::class, 'delete'])->name('users.delete');
+});
+
+Route::prefix("customers")->group(function(){
+    Route::post('/', [CustomerController::class, 'insert'])->name('customers.insert');
+    Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::delete('/{customer}', [CustomerController::class, 'delete'])->name('customers.delete');
 });
 

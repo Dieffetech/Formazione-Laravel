@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\CustomSanctumHasApiTokens;
+use App\Traits\PaginationTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Customer extends Authenticatable
 {
-    use HasFactory, Notifiable, CustomSanctumHasApiTokens;
+    use HasFactory, Notifiable, CustomSanctumHasApiTokens, PaginationTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +19,11 @@ class Customer extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'username',
+        'name',
+        'surname',
         'email',
         'password',
+        'status'
     ];
 
     /**
@@ -41,4 +44,53 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected array $allowedFilters = [
+        'id',
+        'name',
+        'surname',
+        'email',
+        'status'
+    ];
+
+    const PASSWORD_VALIDATION = [
+        "required",
+        "min:8",
+        "confirmed",
+        'regex:/[a-z]/',
+        'regex:/[A-Z]/',
+        'regex:/[0-9]/',
+        'regex:/[@$!%*#?&_.;]/',
+    ];
+
+    public function getStatus()
+    {
+        return [
+            0 => __("Non Attivo"),
+            1 => __("Attivo")
+        ];
+    }
+
+    public static function paginatorSorts()
+    {
+        return "surname";
+    }
+
+    public static function paginatorSortable()
+    {
+        return [
+            'name',
+            'surname',
+            'email',
+        ];
+    }
+
+    public static function paginatorFilterable()
+    {
+        return [
+            'name',
+            'surname',
+            'email',
+        ];
+    }
 }

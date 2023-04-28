@@ -14,7 +14,7 @@ class TokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => ['required', 'max:255', 'regex:/^\S*$/u'],
+            'name' => ['required', 'max:255', 'regex:/^\S*$/u'],
             'password' => 'required'
         ];
     }
