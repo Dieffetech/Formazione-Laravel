@@ -19,7 +19,7 @@ class UserController extends Controller
      * @param UserInsertRequest $request
      * @return JsonResponse
      */
-    public function insert(UserInsertRequest $request)
+    public function insert(UserInsertRequest $request): JsonResponse
     {
 
         $user_id = $request->input('user_id');
@@ -43,7 +43,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function index(Request $request)
+    public function index(Request $request): UserCollection
     {
         $perPage = $request->input('perPage', 10);
         $search = $request->input('search');
@@ -63,7 +63,7 @@ class UserController extends Controller
     }
 
 
-    public function show(User $user, Request $request)
+    public function show(User $user, Request $request): array
     {
             $return = [];
             $return["data"] = (new UserResources($user))->toArray($request);
@@ -71,12 +71,12 @@ class UserController extends Controller
             return $return;
     }
 
-    public function delete(User $user)
+    public function delete(User $user): JsonResponse
     {
-            $user->delete();
+        $user->delete();
 
-            return response()->json([
-                "message" => "Utente eliminato con successo"
-            ]);
+        return response()->json([
+            "message" => "Utente eliminato con successo"
+        ]);
     }
 }

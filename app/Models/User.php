@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\CustomSanctumHasApiTokens;
 use App\Traits\PaginationTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, PaginationTrait;
+    use HasFactory, Notifiable, PaginationTrait, CustomSanctumHasApiTokens;
 
     /**
      * The attributes that are mass assignable.
